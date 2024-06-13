@@ -10,6 +10,7 @@ function ToggleTheme() {
 			document.documentElement.classList.toggle("dark", storedTheme === "dark");
 		}
 	}, []);
+
 	const toggleTheme = () => {
 		const newTheme = theme === "light" ? "dark" : "light";
 		setTheme(newTheme);
