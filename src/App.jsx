@@ -1,5 +1,6 @@
 import AddEvent from "./components/AddEvent"
 import ToggleTheme from "./components/ToggleTheme"
+import SideBar from "./components/SideBar"
 
 function App() {
 	return (
