@@ -21,7 +21,7 @@ function ToggleTheme() {
 	return (
 		<button className="fixed top-3 right-3 md:top-8 md:right-8 rounded-lg" onClick={toggleTheme}>
 			{theme === "light" ?
-				<svg viewBox="0 0 24 24" width="36" height="36" stroke="#7AA2E3" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-4ym8mv">
+				<svg viewBox="0 0 24 24" width="36" height="36" stroke="#7AA2E3" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="css-4ym8mv">
 					<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
 				</svg>
 				:
@@ -30,11 +30,11 @@ function ToggleTheme() {
 					width="42"
 					height="42"
 					stroke="#3282B8"
-					stroke-width="2"
+					strokeWidth="2"
 					fill="none"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					class="css-4ym8mv">
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					className="css-4ym8mv">
 					<circle cx="12" cy="12" r="5"></circle>
 					<line x1="12" y1="1" x2="12" y2="3"></line>
 					<line x1="12" y1="21" x2="12" y2="23"></line>
