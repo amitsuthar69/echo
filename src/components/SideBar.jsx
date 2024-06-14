@@ -17,19 +17,16 @@ export default function SideBar() {
       </button>
 
       <aside
-        className={`fixed inset-y-0 left-0 w-64 bg-gray-800 text-white transform transition-transform duration-200 ease-in-out ${
+        className={`fixed inset-y-0 left-0 w-96 bg-light-blue-400 dark:bg-dark-blue-300 text-white transform transition-transform duration-200 ease-in-out ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <ul className="mt-12">
+        <ul className="mt-20">
           <li className="p-4">Item 1</li>
           <li className="p-4">Item 2</li>
           <li className="p-4">Item 3</li>
         </ul>
       </aside>
-      <main className="flex-grow p-4 text-gray-50">
-        <h1>Main Content</h1>
-      </main>
     </div>
   );
 }
@@ -43,15 +40,15 @@ function HamburgerMenu({ toggleSidebar }) {
   };
 
   return (
-    <div className="bg-[#1B262C] p-1 rounded">
+    <div className="bg-light-blue-100 dark:bg-dark-blue-400  p-1 rounded">
       <svg
-        width="24"
-        height="24"
+        width="35"
+        height="35"
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         onClick={handleClick}
-        className="text-custom-blue"
+        className="dark:text-light-blue-200 text-dark-blue-400"
       >
         {isOpen ? (
           <>
