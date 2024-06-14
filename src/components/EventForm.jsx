@@ -5,7 +5,6 @@ function EventForm({ onClose, onSave }) {
 
 	const handleChange = (e) => {
 		setEventDetails(eventDetails => ({ ...eventDetails, [e.target.name]: e.target.value }));
-		console.log(eventDetails);
 	}
 
 	const handleSave = () => {
