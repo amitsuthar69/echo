@@ -1,6 +1,7 @@
 import AddEvent from "./components/AddEvent"
 import ToggleTheme from "./components/ToggleTheme"
 import SideBar from "./components/SideBar"
+import EventCalendar from "./components/EventCalendar";
 
 function App() {
 	return (
@@ -11,6 +12,7 @@ function App() {
 			</h1>
 			<ToggleTheme />
 			<AddEvent />
+			<EventCalendar />
 		</div>
 	);
 }
