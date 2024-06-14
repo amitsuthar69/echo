@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
 
 function ToggleTheme() {
-	const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
-	useEffect(() => {
-		const storedTheme = localStorage.getItem("theme");
-		if (storedTheme) {
-			setTheme(storedTheme);
-			document.documentElement.classList.toggle("dark", storedTheme === "dark");
-		}
-	}, []);
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme) {
+      setTheme(storedTheme);
+      document.documentElement.classList.toggle("dark", storedTheme === "dark");
+    }
+  }, []);
 
-	const toggleTheme = () => {
-		const newTheme = theme === "light" ? "dark" : "light";
-		setTheme(newTheme);
-		localStorage.setItem("theme", newTheme);
-		document.documentElement.classList.toggle("dark", newTheme === "dark");
-	};
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.classList.toggle("dark", newTheme === "dark");
+  };
 
 	return (
 		<button className="fixed top-3 right-3 md:top-8 md:right-8 rounded-lg" onClick={toggleTheme}>

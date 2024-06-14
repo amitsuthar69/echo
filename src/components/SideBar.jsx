@@ -3,6 +3,10 @@ import { React, useState } from "react";
 export default function SideBar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [events, setEvents] = useState([]);
+  const [pinnedEventIndexes, setPinnedEventIndexes] = useState(() => {
+    const pinned = localStorage.getItem("pinnedEventIndexes");
+    return pinned ? JSON.parse(pinned) : [];
+  });
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -11,14 +15,35 @@ export default function SideBar() {
   };
 
   const handleDelete = (id) => {
+    const eventToDelete = events[id];
     const updatedEvents = events.filter((_, i) => i !== id);
     setEvents(updatedEvents);
     localStorage.setItem("events", JSON.stringify(updatedEvents));
+
+    const updatedPinnedEventIndexes = pinnedEventIndexes.filter(
+      (index) => index !== id
+    );
+    setPinnedEventIndexes(updatedPinnedEventIndexes);
+    localStorage.setItem(
+      "pinnedEventIndexes",
+      JSON.stringify(updatedPinnedEventIndexes)
+    );
   };
 
   const handleEdit = (id) => {
     const currentEvent = events.filter((_, i) => i == id);
     console.log("curr: ", currentEvent);
+  };
+
+  const handlePinEvent = (id) => {
+    if (!pinnedEventIndexes.includes(id)) {
+      const updatedPinnedEventIndexes = [...pinnedEventIndexes, id];
+      setPinnedEventIndexes(updatedPinnedEventIndexes);
+      localStorage.setItem(
+        "pinnedEventIndexes",
+        JSON.stringify(updatedPinnedEventIndexes)
+      );
+    }
   };
 
   return (
@@ -31,12 +56,15 @@ export default function SideBar() {
       </button>
 
       <aside
-        className={`fixed inset-y-0 left-0 w-96 bg-light-blue-400 dark:bg-dark-blue-300 text-white transform transition-transform duration-200 ease-in-out ${
+        className={`fixed inset-y-0 left-0 w-80 md:w-96 bg-light-blue-400 dark:bg-dark-blue-300 text-white transform transition-transform duration-200 ease-in-out ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <ul className="mt-20">
-          {events &&
+          <p className="text-center font-semibold text-dark-blue-400 dark:text-light-blue-100 mt-4">
+            Your Events
+          </p>
+          {events && events.length > 0 ? (
             events.map((e, i) => (
               <div key={i}>
                 <EventCard
@@ -44,9 +72,16 @@ export default function SideBar() {
                   title={e.title}
                   handleDelete={handleDelete}
                   handleEdit={handleEdit}
+                  handlePinEvent={handlePinEvent}
+                  isPinned={pinnedEventIndexes.includes(i)}
                 />
               </div>
-            ))}
+            ))
+          ) : (
+            <p className="text-center text-xs text-dark-blue-400/75 dark:text-light-blue-100/75 mt-12">
+              No Events Yet!
+            </p>
+          )}
         </ul>
       </aside>
     </div>
@@ -98,14 +133,28 @@ function HamburgerMenu({ toggleSidebar }) {
   );
 }
 
-function EventCard({ id, title, handleDelete, handleEdit }) {
+function EventCard({
+  id,
+  title,
+  handleDelete,
+  handleEdit,
+  handlePinEvent,
+  isPinned,
+}) {
+  const bgColor = isPinned
+    ? "bg-gray-200/50"
+    : "bg-white dark:bg-light-blue-400";
+
   return (
     <div className="flex mt-2 items-center justify-between py-4 px-3 mx-4 rounded-md dark:text-gray-50 text-dark-blue-400 bg-white dark:bg-light-blue-400 hover:scale-105 transition-transform duration-300 cursor-pointer">
       <p className="font-bold overflow-hidden text-ellipsis whitespace-nowrap w-full">
         {title}
       </p>
       <div className="btns flex gap-1 items-center justify-end">
-        <button className="hover:bg-gray-200 p-1.5 rounded">
+        <button
+          onClick={() => handlePinEvent(id)}
+          className={`hover:bg-gray-200 ${bgColor} p-1.5 rounded`}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -113,9 +162,9 @@ function EventCard({ id, title, handleDelete, handleEdit }) {
             viewBox="0 0 24 24"
             fill="none"
             stroke="#333333"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             className="lucide lucide-pin"
           >
             <line x1="12" x2="12" y1="17" y2="22" />
@@ -132,10 +181,10 @@ function EventCard({ id, title, handleDelete, handleEdit }) {
             height="20"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#59ff00"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            stroke="#00ff1e"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             className="lucide lucide-pencil"
           >
             <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
@@ -153,9 +202,9 @@ function EventCard({ id, title, handleDelete, handleEdit }) {
             viewBox="0 0 24 24"
             fill="none"
             stroke="#ff4d4d"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             className="lucide lucide-trash-2"
           >
             <path d="M3 6h18" />
