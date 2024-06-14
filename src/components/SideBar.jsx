@@ -3,8 +3,8 @@ import { React, useState } from "react";
 export default function SideBar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [events, setEvents] = useState([]);
-  const [pinnedEvents, setPinnedEvents] = useState(() => {
-    const pinned = localStorage.getItem("pinnedEvents");
+  const [pinnedEventIndexes, setPinnedEventIndexes] = useState(() => {
+    const pinned = localStorage.getItem("pinnedEventIndexes");
     return pinned ? JSON.parse(pinned) : [];
   });
 
@@ -20,11 +20,14 @@ export default function SideBar() {
     setEvents(updatedEvents);
     localStorage.setItem("events", JSON.stringify(updatedEvents));
 
-    const updatedPinnedEvents = pinnedEvents.filter(
-      (event) => event.title !== eventToDelete.title
+    const updatedPinnedEventIndexes = pinnedEventIndexes.filter(
+      (index) => index !== id
     );
-    setPinnedEvents(updatedPinnedEvents);
-    localStorage.setItem("pinnedEvents", JSON.stringify(updatedPinnedEvents));
+    setPinnedEventIndexes(updatedPinnedEventIndexes);
+    localStorage.setItem(
+      "pinnedEventIndexes",
+      JSON.stringify(updatedPinnedEventIndexes)
+    );
   };
 
   const handleEdit = (id) => {
@@ -33,10 +36,14 @@ export default function SideBar() {
   };
 
   const handlePinEvent = (id) => {
-    const pinEvent = events.filter((_, i) => i === id)[0];
-    const updatedPinnedEvents = [...pinnedEvents, pinEvent];
-    setPinnedEvents(updatedPinnedEvents);
-    localStorage.setItem("pinnedEvents", JSON.stringify(updatedPinnedEvents));
+    if (!pinnedEventIndexes.includes(id)) {
+      const updatedPinnedEventIndexes = [...pinnedEventIndexes, id];
+      setPinnedEventIndexes(updatedPinnedEventIndexes);
+      localStorage.setItem(
+        "pinnedEventIndexes",
+        JSON.stringify(updatedPinnedEventIndexes)
+      );
+    }
   };
 
   return (
@@ -66,9 +73,7 @@ export default function SideBar() {
                   handleDelete={handleDelete}
                   handleEdit={handleEdit}
                   handlePinEvent={handlePinEvent}
-                  isPinned={pinnedEvents.some(
-                    (event) => event.title === e.title
-                  )}
+                  isPinned={pinnedEventIndexes.includes(i)}
                 />
               </div>
             ))
