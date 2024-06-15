@@ -3,16 +3,22 @@ import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
 import moment from 'moment';
 import EventModal from './EventModal';
+import EventForm from './EventForm';
 
 function PinnedEventsCarousel() {
 	const events = JSON.parse(localStorage.getItem('events')) || [];
-	const [pinnedEventIndexes, setPinnedEventIndexes] = useState(JSON.parse(localStorage.getItem('pinnedEventIndexes')) || []);
+	const [pinnedEventIndexes, setPinnedEventIndexes] = useState(
+		JSON.parse(localStorage.getItem('pinnedEventIndexes')) || []
+	);
 	const formatDate = (date) => moment(date).format('MMMM Do YYYY, h:mm:ss a');
 
 	const [itemsToShow, setItemsToShow] = useState(1);
 	const [selectedEvent, setSelectedEvent] = useState(null);
+	const [selectedEventIndex, setSelectedEventIndex] = useState(0);
 	const [modalOpen, setModalOpen] = useState(false);
 	const [selectedGradient, setSelectedGradient] = useState(null);
+
+	const [formOpen, setFormOpen] = useState(false);
 
 	useEffect(() => {
 		const updateItemsToShow = () => {
@@ -52,6 +58,17 @@ function PinnedEventsCarousel() {
 		setModalOpen(false);
 	};
 
+	const openEditForm = (eventIndex) => {
+		setSelectedEvent(events[eventIndex]);
+		setSelectedEventIndex(eventIndex);
+		setFormOpen(true);
+	};
+
+	const closeForm = () => {
+		setFormOpen(false);
+		setSelectedEvent(null);
+	};
+
 	const gradients = [
 		"linear-gradient(to right, #bb377d, #fbd3e9)",
 		"linear-gradient(to right, #a1c4fd, #c2e9fb)",
@@ -68,7 +85,7 @@ function PinnedEventsCarousel() {
 	}
 
 	const deletePinnedEvent = (eventIndex) => {
-		const updatedEvents = events.filter((event, index) => index !== eventIndex);
+		const updatedEvents = events.filter((_, index) => index !== eventIndex);
 		localStorage.setItem('events', JSON.stringify(updatedEvents));
 
 		const updatedPinnedIndexes = pinnedEventIndexes.filter((index) => index !== eventIndex);
@@ -88,6 +105,21 @@ function PinnedEventsCarousel() {
 		}
 	};
 
+	const handleSave = (updatedEvent) => {
+		const updatedEvents = [...events]; // Copy the events array
+		const eventIndex = selectedEventIndex; // Get the selected event index
+
+		if (eventIndex >= 0 && eventIndex < updatedEvents.length) {
+			updatedEvents[eventIndex] = updatedEvent; // Update the event at the correct index
+			localStorage.setItem('events', JSON.stringify(updatedEvents)); // Update localStorage
+
+			// Update selectedEvent if it matches the edited event
+			setSelectedEvent(updatedEvent); // Update selectedEvent with updatedEvent
+		}
+
+		closeForm();
+	};
+
 	return (
 		<>
 			<AliceCarousel
@@ -99,11 +131,20 @@ function PinnedEventsCarousel() {
 						{group.map((eventIndex) => (
 							<div
 								key={eventIndex}
-								className={`flex items-center justify-center ${itemsToShow === 1 ? 'w-full' : 'w-1/3'} px-2`}
-								onClick={() => openModal(events[eventIndex], getGradient(eventIndex))}
+								className={`flex items-center justify-center ${itemsToShow === 1 ? 'w-full' : 'w-1/3'
+									} px-2`}
+								onClick={() =>
+									openModal(events[eventIndex], getGradient(eventIndex))
+								}
 							>
-								<div className="text-dark-blue-400 rounded-lg shadow-md max-w-md space-y-6 py-8 px-10 relative"
-									style={{ height: '200px', width: '400px', background: getGradient(eventIndex) }}>
+								<div
+									className="text-dark-blue-400 rounded-lg shadow-md max-w-md space-y-6 py-8 px-10 relative"
+									style={{
+										height: '200px',
+										width: '400px',
+										background: getGradient(eventIndex),
+									}}
+								>
 									<div className="flex justify-between items-center px-1 md:px-6">
 										<h3 className="text-4xl font-semibold mb-2 overflow-y-auto">
 											{events[eventIndex].title}
@@ -113,13 +154,21 @@ function PinnedEventsCarousel() {
 												className="hover:bg-purple-200 dark:hover:bg-purple-200 p-1.5 rounded"
 												onClick={(e) => {
 													e.stopPropagation();
-													// Implement edit functionality here
-													console.log('Edit event clicked');
+													openEditForm(eventIndex); // Open edit form
 												}}
 											>
-												<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-													stroke="#0F4C75" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-													className="lucide lucide-pencil">
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													width="20"
+													height="20"
+													viewBox="0 0 24 24"
+													fill="none"
+													stroke="#0F4C75"
+													strokeWidth="2"
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													className="lucide lucide-pencil"
+												>
 													<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
 													<path d="m15 5 4 4" />
 												</svg>
@@ -131,9 +180,18 @@ function PinnedEventsCarousel() {
 													deletePinnedEvent(eventIndex);
 												}}
 											>
-												<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-													stroke="#ff4d4d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-													className="lucide lucide-trash-2">
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													width="20"
+													height="20"
+													viewBox="0 0 24 24"
+													fill="none"
+													stroke="#ff4d4d"
+													strokeWidth="2"
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													className="lucide lucide-trash-2"
+												>
 													<path d="M3 6h18" />
 													<path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
 													<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
@@ -143,7 +201,10 @@ function PinnedEventsCarousel() {
 											</button>
 										</div>
 									</div>
-									<p className="text-lg font-mono mb-2 overflow-y-auto" style={{ maxHeight: '48px' }}>
+									<p
+										className="text-lg font-mono mb-2 overflow-y-auto"
+										style={{ maxHeight: '48px' }}
+									>
 										{events[eventIndex].description}
 									</p>
 									<p className="text-sm font-mono">
@@ -162,7 +223,20 @@ function PinnedEventsCarousel() {
 					</div>
 				))}
 			/>
-			{modalOpen && <EventModal event={selectedEvent} gradient={selectedGradient} onClose={closeModal} />}
+			{modalOpen && (
+				<EventModal
+					event={selectedEvent}
+					gradient={selectedGradient}
+					onClose={closeModal}
+				/>
+			)}
+			{formOpen && (
+				<EventForm
+					onClose={closeForm}
+					onSave={handleSave}
+					eventData={selectedEvent}
+				/>
+			)}
 		</>
 	);
 }
