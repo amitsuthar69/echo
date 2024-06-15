@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import 'react-calendar/dist/Calendar.css';
 import Calendar from 'react-calendar';
 import moment from 'moment';
@@ -35,8 +35,8 @@ function EventCalendar() {
 	};
 
 	return (
-		<div>
-			<button className="bg-[#7AA2E3] dark:bg-[#BBE1FA] rounded-lg fixed bottom-8 right-28 p-1"
+		<>
+			<button className="bg-[#7AA2E3] dark:bg-[#BBE1FA] rounded-lg fixed bottom-8 right-28 p-1 z-20"
 				type='submit' onClick={handleOpen}>
 				<svg xmlns="http://www.w3.org/2000/svg"
 					width="3em"
@@ -60,16 +60,18 @@ function EventCalendar() {
 				</svg>
 			</button>
 			{isCalendarOpen && (
+				<div className='fixed top-48 self-center p-1 z-10'>
 					<Calendar
-						className="rounded-lg bg-light-blue-400 flex flex-col justify-center items-center mt-24 z-20"
+						className="rounded-lg bg-light-blue-400 mb-16"
 						onChange={(date) => setDate(date)}
 						value={date}
 						tileClassName={({ date, view }) => {
 							return getEventColor(date);
 						}}
 					/>
+				</div>
 			)}
-		</div>
+		</>
 	);
 }
 

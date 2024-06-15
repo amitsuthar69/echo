@@ -2,6 +2,7 @@ import AddEvent from "./components/AddEvent"
 import ToggleTheme from "./components/ToggleTheme"
 import SideBar from "./components/SideBar"
 import EventCalendar from "./components/EventCalendar";
+import PinnedEventsCarousel from "./components/PinnedEventsCarousal";
 
 function App() {
 	return (
@@ -10,6 +11,7 @@ function App() {
 			<h1 className="text-7xl font-mono text-[#7AA2E3] dark:text-[#3282B8] mt-6">
 				Echo
 			</h1>
+			<PinnedEventsCarousel />
 			<ToggleTheme />
 			<AddEvent />
 			<EventCalendar />
