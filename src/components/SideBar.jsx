@@ -46,14 +46,16 @@ export default function SideBar() {
 	};
 
 	const handlePinEvent = (id) => {
-		if (!pinnedEventIndexes.includes(id)) {
-			const updatedPinnedEventIndexes = [...pinnedEventIndexes, id];
-			setPinnedEventIndexes(updatedPinnedEventIndexes);
-			localStorage.setItem(
-				"pinnedEventIndexes",
-				JSON.stringify(updatedPinnedEventIndexes)
-			);
+		let updatedPinnedEventIndexes;
+		if (pinnedEventIndexes.includes(id)) {
+			// Unpin the event if it's already pinned
+			updatedPinnedEventIndexes = pinnedEventIndexes.filter(index => index !== id);
+		} else {
+			// Pin the event if it's not already pinned
+			updatedPinnedEventIndexes = [...pinnedEventIndexes, id];
 		}
+		setPinnedEventIndexes(updatedPinnedEventIndexes);
+		localStorage.setItem("pinnedEventIndexes", JSON.stringify(updatedPinnedEventIndexes));
 	};
 
 	const handleSave = (updatedEvent) => {
@@ -200,7 +202,7 @@ function EventCard({
 			</p>
 			<div className="btns flex gap-1 items-center justify-end">
 				<button
-					onClick={() => handlePinEvent(id)}
+					onClick={(e) => { e.stopPropagation(); handlePinEvent(id); }}
 					className={`hover:bg-gray-200 ${bgColor} p-1.5 rounded`}
 				>
 					<svg
