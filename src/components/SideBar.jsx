@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import EventForm from './EventForm';
+import EventModal from './EventModal';
 
 export default function SideBar() {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -12,6 +13,7 @@ export default function SideBar() {
 	const [formOpen, setFormOpen] = useState(false);
 	const [selectedEvent, setSelectedEvent] = useState(null);
 	const [selectedEventIndex, setSelectedEventIndex] = useState(0);
+	const [modalOpen, setModalOpen] = useState(false);
 
 	useEffect(() => {
 		const e = JSON.parse(localStorage.getItem("events"));
@@ -69,6 +71,15 @@ export default function SideBar() {
 		setSelectedEvent(null);
 	};
 
+	const openModal = (event) => {
+		setSelectedEvent(event);
+		setModalOpen(true);
+	};
+
+	const closeModal = () => {
+		setModalOpen(false);
+	};
+
 	return (
 		<div className="flex">
 			<button
@@ -88,7 +99,7 @@ export default function SideBar() {
 					</p>
 					{events && events.length > 0 ? (
 						events.map((e, i) => (
-							<div key={i}>
+							<div key={i} onClick={() => openModal(e)}>
 								<EventCard
 									id={i}
 									title={e.title}
@@ -112,6 +123,13 @@ export default function SideBar() {
 					onClose={closeForm}
 					onSave={handleSave}
 					eventData={selectedEvent}
+				/>
+			)}
+
+			{modalOpen && (
+				<EventModal
+					event={selectedEvent}
+					onClose={closeModal}
 				/>
 			)}
 		</div>
@@ -202,7 +220,7 @@ function EventCard({
 					</svg>
 				</button>
 				<button
-					onClick={() => handleEdit(id)}
+					onClick={(e) => { e.stopPropagation(); handleEdit(id); }}
 					className="hover:bg-purple-200 dark:hover:bg-purple-200 p-1.5 rounded"
 				>
 					<svg
@@ -217,13 +235,13 @@ function EventCard({
 						strokeLinejoin="round"
 						className="lucide lucide-pencil"
 					>
-						<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
-						<path d="m15 5 4 4" />
+						<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.623l4.352-1.32a2 2 0 0 0 .83-.5l13.346-13.346Z" />
+						<path d="m18 2 4 4" />
 					</svg>
 				</button>
 				<button
-					onClick={() => handleDelete(id)}
-					className="hover:bg-red-100 dark:hover:bg-red-100 p-1.5 rounded"
+					onClick={(e) => { e.stopPropagation(); handleDelete(id); }}
+					className="hover:bg-red-200 dark:hover:bg-red-200 p-1.5 rounded"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -231,17 +249,14 @@ function EventCard({
 						height="20"
 						viewBox="0 0 24 24"
 						fill="none"
-						stroke="#FF5733"
+						stroke="#ff0000"
 						strokeWidth="2"
 						strokeLinecap="round"
 						strokeLinejoin="round"
-						className="lucide lucide-trash-2"
+						className="lucide lucide-trash"
 					>
 						<path d="M3 6h18" />
-						<path d="M19 6l-.867 12.142A2 2 0 0 1 16.137 20H7.863a2 2 0 0 1-1.996-1.858L5 6" />
-						<path d="M10 11v6" />
-						<path d="M14 11v6" />
-						<path d="M10 6V4a2 2 0 1 1 4 0v2" />
+						<path d="M19 6l-.867 12.141A2 2 0 0 1 16.137 20H7.863a2 2 0 0 1-1.996-1.859L5 6m5 6v6m4-6v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
 					</svg>
 				</button>
 			</div>
